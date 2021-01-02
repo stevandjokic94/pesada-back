@@ -54,7 +54,7 @@ exports.create = (req, res) => {
 			//OVDE ULAZI AKO IMA VISE SLIKA
 			for(let i=0;i<files.gallery.length;i++){
 				if(files.gallery[i]){
-					if(files.gallery[i] > 1_000_000){
+					if(files.gallery[i] > 1000000){
 						return res.status(400).json({
 							error: 'Slika je prevelika'
 						});
