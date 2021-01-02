@@ -79,7 +79,7 @@ exports.create = (req, res) => {
 		//OVDE AKO IMA SAMO JEDNA SLIKA
 		else{
 			if(files.gallery){
-				if(files.gallery > 1_000_000){
+				if(files.gallery > 1000000){
 					return res.status(400).json({
 						error: 'Slika je prevelika'
 					});
@@ -102,7 +102,7 @@ exports.create = (req, res) => {
 		
 		//ZA PROFILNU SLIKU
 		if(files.photo){
-			if(files.photo.size > 1_000_000){
+			if(files.photo.size > 1000000){
 				return res.status(400).json({
 					error: "Prevelika profilna slika"
 				});
@@ -165,7 +165,7 @@ exports.update = (req, res) => {
 			//OVDE ULAZI AKO IMA VISE SLIKA
 			for(let i=0;i<files.gallery.length;i++){
 				if(files.gallery[i]){
-					if(files.gallery[i] > 1_000_000){
+					if(files.gallery[i] > 1000000){
 						return res.status(400).json({
 							error: 'Slika je prevelika'
 						});
@@ -190,7 +190,7 @@ exports.update = (req, res) => {
 		//OVDE AKO IMA SAMO JEDNA SLIKA
 		else{
 			if(files.gallery){
-				if(files.gallery > 1_000_000){
+				if(files.gallery > 1000000){
 					return res.status(400).json({
 						error: 'Slika je prevelika'
 					});
@@ -212,7 +212,7 @@ exports.update = (req, res) => {
 
 		//ZA PROFILNU SLIKU
 		if(files.photo){
-			if(files.photo.size > 1_000_000){
+			if(files.photo.size > 1000000){
 				return res.status(400).json({
 					error: "Prevelika profilna slika"
 				});
