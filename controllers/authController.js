@@ -7,13 +7,13 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 
 exports.signup = async(req, res) => {
-	console.log(req.body);
+	// console.log(req.body);
 	const user = await(new User(req.body));
 
 	user.passwordToken = crypto.randomBytes(20).toString('hex');
   await user.save();
-  
-  const resetURL = `http://localhost:3000/account/confirm/${user.passwordToken}`;
+
+  const resetURL = `http://178.128.206.250/account/confirm/${user.passwordToken}`;
  	sendEmail(user, 'Potvrda email adrese', `Molimo, kliknite na link kako biste verifikovali nalog: ${resetURL}`);
   
 	await(user.save((err, user) => {
