@@ -440,14 +440,21 @@ exports.listBySearchResults = async(req, res) => {
 		}
 	}
 	delete findArgs.category;
-	findArgs['name'] = { 
-		$regex: `${param}`, $options: 'i' 
-	};
-	findArgs['hide'] = false;
 
 	// console.log(findArgs);
 
-	await Product.find(findArgs)
+	await Product.find({ 
+		"$or":[{
+			"name" : { 
+				$regex: `${req.body.param}`, $options: 'i' 
+			}},
+			{
+			"code" : { 
+				$regex: `${req.body.param}`, $options: 'i' 
+			}}
+		],
+		"hide": false
+	})
 		.select('-photo')
 		.select('-gallery')
 		.populate('subcategory')
