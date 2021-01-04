@@ -394,6 +394,7 @@ exports.listSearchResults = (req, res) => {
 		],
 		"hide": false
 	})
+	.limit(6)
 	.exec((err, data) => {
 		if (err) 
 				return res.status(400).json({
