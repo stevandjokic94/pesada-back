@@ -394,6 +394,8 @@ exports.listSearchResults = (req, res) => {
 		],
 		"hide": false
 	})
+	.select('-photo')
+	.select('-gallery')
 	.limit(6)
 	.exec((err, data) => {
 		if (err) 
