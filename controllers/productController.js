@@ -149,8 +149,7 @@ exports.remove = async(req, res) => {
 };
 
 exports.update = async (req, res) => {
-	if(req.body.product.discount > 0)
-		req.body.product["priceWithDiscount"] = req.body.product.price - req.body.product.price * req.body.product.discount / 100;
+	req.body.product["priceWithDiscount"] = req.body.product.price - req.body.product.price * req.body.product.discount / 100;
 	if(!req.body.product.tags)
 		req.body.product.tags = [];
 	await Product.findOneAndUpdate(
