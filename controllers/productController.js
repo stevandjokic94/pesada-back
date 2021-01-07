@@ -148,98 +148,23 @@ exports.remove = async(req, res) => {
 	});
 };
 
-exports.update = (req, res) => {
-	let form = new formidable.IncomingForm({multiples:true});
-	form.keepExtensions = true;
-	form.parse(req, (err, fields, files) => {
-		if(err){
-			return res.status(400).json({
-				error: 'Neuspelo učitavanje artikla'
-			});
-		}
-		
-		let product = new Product(fields);
-		let img;
-
-		if(files.gallery.length)
-			//OVDE ULAZI AKO IMA VISE SLIKA
-			for(let i=0;i<files.gallery.length;i++){
-				if(files.gallery[i]){
-					if(files.gallery[i] > 1000000){
-						return res.status(400).json({
-							error: 'Slika je prevelika'
-						});
-					}
-					img = new Photo({
-						"data": fs.readFileSync(files.gallery[i].path),
-						"contentType": files.gallery[i].type
-					});
-					product.gallery[i] = img._id;
-					// console.log(files.gallery[0].type);
-					img.save((err, result) => {
-						if(err){
-							return res.status(400).json({
-								error: errorHandler(error)
-							});
-						}
-					});
-					// console.log(img);
-
-				}
-			}
-		//OVDE AKO IMA SAMO JEDNA SLIKA
-		else{
-			if(files.gallery){
-				if(files.gallery > 1000000){
-					return res.status(400).json({
-						error: 'Slika je prevelika'
-					});
-				}
-				img = new Photo({
-					"data": fs.readFileSync(files.gallery[i].path),
-					"contentType": files.gallery.type
-				});
-				product.gallery[i] = img._id;
-				img.save((err, result) => {
-					if(err){
-						return res.status(400).json({
-							error: errorHandler(error)
-						});
-					}
-				});
-			}
-		}
-
-		//ZA PROFILNU SLIKU
-		if(files.photo){
-			if(files.photo.size > 1000000){
-				return res.status(400).json({
-					error: "Prevelika profilna slika"
-				});
-			}
-			product.photo.data = fs.readFileSync(files.photo.path);
-			product.photo.contentType = files.photo.type;
-		}
-
-		const {name, description, price, subcategory} = fields;
-
-		if(!name || !description || !price || !subcategory){
-			return res.status(400).json({
-				error: 'Neko od obaveznih polja je prazno'
-			});
-		}
-		
-		
-
-		product.save((err, result) => {
+exports.update = async (req, res) => {
+	console.log('asdasdasd', req);
+	await Product.findOneAndUpdate(
+    { "_id": req.product._id },//ono sto find trazi
+    req.body.product,//ono sto menjamo
+    { 
+      new: true,
+      runValidators: true
+    }
+  ).exec((err, product) => {
 			if(err){
 				return res.status(400).json({
-					error: errorHandler(error)
-				});
+					error: 'Proizvod nije pronadjen'
+				})
 			}
-			res.json(result);
+			res.json({message:"Uspesno editovan proizvod"});
 		});
-	});
 };
 
 exports.listProducts = async (req, res) => {
