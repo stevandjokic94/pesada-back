@@ -59,16 +59,43 @@ exports.readSubcat = (req, res) => {
 };
 
 exports.updateCat = async(req, res) => {
-	const category = req.category;
-	category.name = req.body.name;
-	await category.save((err, data) => {
-		if(err){
-			return res.status(400).json({
-				error: errorHandler(err)
-			});
-		}
-		res.json(data);
-	});
+	console.log(req.body);
+	await Category.findOneAndUpdate(
+    { "_id": req.category._id },//ono sto find trazi
+    req.body,//ono sto menjamo
+    { 
+      new: true,
+      runValidators: true
+    }
+  ).exec((err, category) => {
+			if(err){
+				return res.status(400).json({
+					error: 'Kategorija nije pronadjena'
+				})
+			}
+			// console.log(category);
+			res.json({message:"Uspesno editovana kategorija"});
+		});
+};
+
+exports.updateSubcat = async(req, res) => {
+	console.log(req.body);
+	await Subcategory.findOneAndUpdate(
+    { "_id": req.subcategory._id },//ono sto find trazi
+    req.body,//ono sto menjamo
+    { 
+      new: true,
+      runValidators: true
+    }
+  ).exec((err, category) => {
+			if(err){
+				return res.status(400).json({
+					error: 'Podkategorija nije pronadjena'
+				})
+			}
+			// console.log(category);
+			res.json({message:"Uspesno editovana podkategorija"});
+		});
 };
 
 exports.deleteCat = async(req, res) => {
