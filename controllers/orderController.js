@@ -58,9 +58,17 @@ exports.create = async(req, res) => {
 			
 			const products = req.body.order.products;
 			const price = products.reduce((acc, element) => {
-				return (acc + element.priceWithDiscount * element.count + element.weightPrice);
+				return (acc + element.priceWithDiscount * element.count);
 			}, 0);
-			const text = `Hvala na porudžbini!\nNaručili ste proizvode sa ukupnom cenom od ${price}`;
+			let text = `Hvala na porudžbini!\nNaručili ste:\n`;
+			for(let i = 0; i < order.products.length; i++){
+				let product = order.products[i];
+				text += `${i+1}) ${product.name} X${product.count} ${Math.round(product.priceWithDiscount)} din, ${Math.round(product.priceWithDiscount) * product.count}\n`;
+			}
+			let weightPrice = getWeightPrice(order.products);
+			text += `Cena dostave: ${weightPrice}\nUKUPNO: ${price + weightPrice}`;
+			
+			console.log(text);
 			
 			if(user && order.signedIn){
 				//save to history
@@ -196,4 +204,25 @@ exports.contactUs = async(req, res) => {
 	const text = `Ime: ${req.body.name}\nEmail: ${req.body.email}\nBroj telefona: ${req.body.number}\nPoruka: 	${req.body.text}`;
 	sendEmail(user, 'Kontakt', text);
 	res.json({'message': 'Email poslat'});
+};
+
+const getWeightPrice = (products) => {
+  let weight = 0;
+  for(let i = 0;i < products.length; i++){
+    weight += products[i].weight * products[i].count;
+  }
+  let price = 0;
+  if(weight < 2 && products.length > 0)
+    price = 290;
+  if(weight >= 2 && weight < 5)
+    price = 390;
+  if(weight >= 5 && weight < 10)
+    price = 590;
+  if(weight >= 10 && weight < 20)
+    price = 790;
+  if(weight >= 20 && weight < 50)
+    price = 1190;
+  if(weight >= 50)
+    price = 1490;
+  return price;
 };
