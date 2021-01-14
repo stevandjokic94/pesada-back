@@ -18,7 +18,7 @@ exports.sendEmail = async(user, subject, text) => {
     subject,
     text 
   };
-  console.log(process.env.AUTH);
+  console.log(process.env.SERVICE);
   transporter.sendMail(mailOptions, function(error, info){
     if(error){
       errorHandler(error);
