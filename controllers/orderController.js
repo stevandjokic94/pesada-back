@@ -60,14 +60,18 @@ exports.create = async(req, res) => {
 			const price = products.reduce((acc, element) => {
 				return (acc + element.priceWithDiscount * element.count);
 			}, 0);
-			let text = `Hvala na porudžbini!\nNaručili ste:\n`;
+
+			let text = getEmailContent(order);
+			text += `\nSADRŽAJ PORUDŽBINE:\n`;
+
 			for(let i = 0; i < order.products.length; i++){
 				let product = order.products[i];
-				text += `${i+1}) ${product.name} X${product.count} ${Math.round(product.priceWithDiscount)} din, ${Math.round(product.priceWithDiscount) * product.count}\n`;
+				text += `\n\t${i+1}) \tNaziv proizvoda:    ${product.name}\n\t\t  Šifra proizvoda:      ${product.code}\n\t\t  Cena:                      ${formatPrice(product.priceWithDiscount)} din\n\t\t  Količina:                  ${product.count}\n\t\t  Iznos:                      ${formatPrice(product.priceWithDiscount * product.count)}din\n`;
 			}
-			let weightPrice = getWeightPrice(order.products);
-			text += `Cena dostave: ${weightPrice}\nUKUPNO: ${price + weightPrice}`;
 			
+			let weightPrice = getWeightPrice(order.products);
+			text += `\nCena dostave: ${formatPrice(weightPrice)} din\n\nUKUPNO: ${formatPrice(price + weightPrice)} din\n\n`;
+			text += `U slučaju da nešto od proizvoda iz Vaše porudžbine trenutno nije dostupno, kontaktiraće Vas neko od naših operatera radi daljeg dogovora. Za sva dodatna pitanja možete nas kontaktirati putem email adrese: pesadashop@gmail.com`;
 			console.log(text);
 			
 			if(user && order.signedIn){
@@ -212,17 +216,43 @@ const getWeightPrice = (products) => {
     weight += products[i].weight * products[i].count;
   }
   let price = 0;
-  if(weight < 2 && products.length > 0)
+  if(weight <= 2 && products.length > 0)
     price = 290;
-  if(weight >= 2 && weight < 5)
+  if(weight > 2 && weight <= 5)
     price = 390;
-  if(weight >= 5 && weight < 10)
+  if(weight > 5 && weight <= 10)
     price = 590;
-  if(weight >= 10 && weight < 20)
+  if(weight > 10 && weight <= 20)
     price = 790;
-  if(weight >= 20 && weight < 50)
+  if(weight > 20 && weight <= 50)
     price = 1190;
-  if(weight >= 50)
+  if(weight > 50)
     price = 1490;
   return price;
+};
+
+const formatPrice = (price) => {
+  return Math.round(price).toLocaleString().replace(/,/g, '.').concat(',00');
+};
+
+const getEmailContent = (order) => {
+	let text;
+	//fizicko lice
+	if(order.role === 0){
+		text = `Poštovani/a,\nUspešno ste izvršili porudžbinu.\n\nLIČNI PODACI KUPCA:\nIme:            ${order.name}\nPrezime:        ${order.surname}\nBroj telefona:  ${order.phone}\nUlica:          ${order.street}\nBroj:           ${order.homeNumber}\nGrad/Mesto:     ${order.city}\nEmail:          ${order.email}\nNapomena:       ${order.note.length > 0 ? order.note : "/"}\nNAČIN PLAĆANJA: `;
+		if(order.paymentMethod === 'cash')
+			text += "Gotovinom(prilikom dostave)\n";
+		else{
+			text += "Preko računa\n";
+		}
+	}
+	else{
+		text = `Poštovani/a,\nUspešno ste izvršili porudžbinu.\n\nLIČNI PODACI KUPCA:\nKorisničko ime:  ${order.name}\nNaziv firme:       ${order.company}\nKontakt osoba:  ${order.contactPerson}\nPIB:                    ${order.pib}\nBroj telefona:    ${order.phone}\nUlica:                 ${order.street}\nBroj:                  ${order.homeNumber}\nGrad/Mesto:     ${order.city}\nEmail:                ${order.email}\nNapomena:       ${order.note.length > 0 ? order.note : "/"}\nNAČIN PLAĆANJA: `;
+		if(order.paymentMethod === 'cash')
+			text += "Gotovinom(prilikom dostave)\n";
+		else{
+			text += "Preko računa\n";
+		}
+	}
+	return text;
 };
