@@ -49,7 +49,7 @@ exports.create = async(req, res) => {
 	// console.log(req.body.order);
 	await User.findOne({
 		email: req.body.order['email']
-	}, (err, user) => {
+	}, async(err, user) => {
 			if(err){
 				return res.status(400).json({
 					error: errorHandler(err)
@@ -73,16 +73,19 @@ exports.create = async(req, res) => {
 			text += `\nCena dostave: ${formatPrice(weightPrice)} din\n\nUKUPNO: ${formatPrice(price + weightPrice)} din\n\n`;
 			text += `U slučaju da nešto od proizvoda iz Vaše porudžbine trenutno nije dostupno, kontaktiraće Vas neko od naših operatera radi daljeg dogovora. Za sva dodatna pitanja možete nas kontaktirati putem email adrese: office@pesada.rs`;
 			console.log(text);
-			
+			let admin = await User.findOne({'name': 'Djordje', 'role':1});
+			console.log(admin);
 			if(user && order.signedIn){
 				//save to history
 				user.history.unshift(req.body.order.products);
 				user.save();
 				//send email confirmation
 				sendEmail(user, 'Potvrda kupovine', text);
+				sendEmail(admin, 'Potvrda kupovine', text);
 			}
 			else{
 				sendEmail(req.body.order, 'Potvrda kupovine', text);
+				sendEmail(admin, 'Potvrda kupovine', text);
 			}
 
 			res.json({ user });
