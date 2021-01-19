@@ -13,7 +13,7 @@ exports.signup = async(req, res) => {
 	user.passwordToken = crypto.randomBytes(20).toString('hex');
   await user.save();
 
-  const resetURL = `http://178.128.206.250/account/confirm/${user.passwordToken}`;
+  const resetURL = `https://www.pesada.rs/account/confirm/${user.passwordToken}`;
  	sendEmail(user, 'Potvrda email adrese', `Molimo, kliknite na link kako biste verifikovali nalog: ${resetURL}`);
   
 	await(user.save((err, user) => {

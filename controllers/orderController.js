@@ -207,7 +207,7 @@ exports.userOrders = async(req, res) => {
 
 exports.contactUs = async(req, res) => {
 	console.log(req.name);
-	const user = {'email': 'stevandjokic94@live.com'};
+	const user = {'email': 'office@pesada.rs'};
 	const text = `Ime: ${req.body.name}\nEmail: ${req.body.email}\nBroj telefona: ${req.body.number}\nPoruka: 	${req.body.text}`;
 	sendEmail(user, 'Kontakt', text);
 	res.json({'message': 'Email poslat'});
