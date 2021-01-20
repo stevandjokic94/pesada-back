@@ -73,7 +73,7 @@ exports.create = async(req, res) => {
 			text += `\nCena dostave: ${formatPrice(weightPrice)} din\n\nUKUPNO: ${formatPrice(price + weightPrice)} din\n\n`;
 			text += `U slučaju da nešto od proizvoda iz Vaše porudžbine trenutno nije dostupno, kontaktiraće Vas neko od naših operatera radi daljeg dogovora. Za sva dodatna pitanja možete nas kontaktirati putem email adrese: office@pesada.rs`;
 			console.log(text);
-			let admin = await User.findOne({'name': 'Djordje', 'role':1});
+			let admin = {'email': 'office@pesada.rs'};
 			console.log(admin);
 			if(user && order.signedIn){
 				//save to history
