@@ -258,7 +258,6 @@ exports.listBySearch = async(req, res) => {
 
 	}
 	findArgs['hide'] = false;
-	// console.log(findArgs);
 
 	await Product.find(findArgs)
 		.select('-photo')
@@ -339,12 +338,13 @@ exports.listSearchResults = (req, res) => {
 
 exports.listBySearchResults = async(req, res) => {
 	let order = req.body.order ? req.body.order : 'desc';
-	let sortBy = req.body.sortBy ? req.body.sortBy : 'name';
-	let limit = req.body.limit ? parseInt(req.body.limit) : 100;
+	let sortBy = req.body.sortBy ? req.body.sortBy : 'priceWithDiscount';
+	let limit = req.body.limit ? parseInt(req.body.limit) : 12;
 	let skip = parseInt(req.body.skip);
 	let param = req.body.param;
 	let findArgs = {};
-		
+	
+
 	for(let key in req.body.filters){
 		if(req.body.filters[key].length > 0){
 			if(key === 'price'){
@@ -362,6 +362,7 @@ exports.listBySearchResults = async(req, res) => {
 	let subcategories = await Subcategory.find({
 		'category': findArgs['category']
 	});
+	// console.log(findArgs, subcategories);
 	
 	if(subcategories.length){
 		findArgs['subcategory'] = [];
@@ -370,21 +371,24 @@ exports.listBySearchResults = async(req, res) => {
 		}
 	}
 	delete findArgs.category;
+	let searchRegexJSON = { 
+			"$or":[{
+				"name" : { 
+					$regex: `${req.body.param}`, $options: 'i' 
+				}},
+				{
+				"code" : { 
+					$regex: `${req.body.param}`, $options: 'i' 
+				}}
+			],
+			"hide": false
+		};
+	findArgs = {...findArgs, ...searchRegexJSON};
 
-	// console.log(findArgs);
+	console.log(findArgs, sortBy, order, 'param: ', req.body.param);
 
-	await Product.find({ 
-		"$or":[{
-			"name" : { 
-				$regex: `${req.body.param}`, $options: 'i' 
-			}},
-			{
-			"code" : { 
-				$regex: `${req.body.param}`, $options: 'i' 
-			}}
-		],
-		"hide": false
-	})
+	await Product
+		.find(findArgs)
 		.select('-photo')
 		.select('-gallery')
 		.populate('subcategory')
@@ -398,7 +402,7 @@ exports.listBySearchResults = async(req, res) => {
 					error: 'Nisu nadjeni prozivodi'
 				});
 			}
-			// console.log(data);
+			console.log(data.length);
 			res.json({
 				size: data.length,
 				data
