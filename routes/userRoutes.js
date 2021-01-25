@@ -20,6 +20,12 @@ router.put('/user/:userId',
 	authController.isAuth, 
 	userController.updateProfile
 );
+router.post('/user/forgot', 
+	userController.forgotPassword
+);
+router.post('/user/password', 
+	userController.editPassword
+);
 
 router.param('userId', userController.userById);
 

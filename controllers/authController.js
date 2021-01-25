@@ -11,15 +11,16 @@ exports.signup = async(req, res) => {
 	const user = await(new User(req.body));
 
 	user.passwordToken = crypto.randomBytes(20).toString('hex');
-  await user.save();
+  // await user.save();
 
   const resetURL = `https://www.pesada.rs/account/confirm/${user.passwordToken}`;
  	sendEmail(user, 'Potvrda email adrese', `Molimo, kliknite na link kako biste verifikovali nalog: ${resetURL}`);
   
 	await(user.save((err, user) => {
 			if(err){
+				console.log('error');
 				return res.status(400).json({
-					err: errorHandler(err)
+					error: 'Korisnik sa ovom email adresom postoji!'
 				});
 			}
 			user.salt = undefined;
