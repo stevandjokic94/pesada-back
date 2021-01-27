@@ -435,7 +435,7 @@ exports.photoFromGallery = async(req, res) => {
 exports.listSelectedProducts = async (req, res) => {
 	let order = req.query.order ? req.query.order : 'asc';
 	let sortBy = req.query.sortBy ? req.query.sortBy : '_id';
-	let limit = req.query.limit ? parseInt(req.query.limit) : 20;
+	let limit = req.query.limit ? parseInt(req.query.limit) : 40;
 
 	await Product
 		.find({hide: false, selected: true})
@@ -458,7 +458,7 @@ exports.listSelectedProducts = async (req, res) => {
 exports.listDiscountProducts = async (req, res) => {
 	let order = req.query.order ? req.query.order : 'asc';
 	let sortBy = req.query.sortBy ? req.query.sortBy : '_id';
-	let limit = req.query.limit ? parseInt(req.query.limit) : 20;
+	let limit = req.query.limit ? parseInt(req.query.limit) : 40;
 
 	await Product
 		.find({hide: false, discount: { "$ne": 0 } })
@@ -474,6 +474,28 @@ exports.listDiscountProducts = async (req, res) => {
 				})
 			}
 			// console.log(products);
+			res.json(products);
+		});
+};
+
+exports.listAllProducts = async (req, res) => {
+	let order = req.query.order ? req.query.order : 'asc';
+	let sortBy = req.query.sortBy ? req.query.sortBy : '_id';
+	// let limit = req.query.limit ? parseInt(req.query.limit) : 6;
+
+	await Product
+		.find({hide: false})
+		.select('-photo')
+		.select('-gallery')
+		.populate('subcategory')
+		.sort([[sortBy, order]])
+		// .limit(limit)
+		.exec((err, products) => {
+			if(err){
+				return res.status(400).json({
+					error: 'Proizvodi nisu pronadjeni'
+				})
+			}
 			res.json(products);
 		});
 };

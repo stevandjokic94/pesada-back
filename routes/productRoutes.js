@@ -24,6 +24,7 @@ router.put('/product/:productId/:userId',
 	productController.update
 );
 router.get('/products', productController.listProducts);
+router.get('/products/all', productController.listAllProducts);
 router.get('/products/selected', productController.listSelectedProducts);
 router.get('/products/discount', productController.listDiscountProducts);
 router.get('/products/related/:productId', 
