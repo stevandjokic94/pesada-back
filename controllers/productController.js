@@ -170,10 +170,10 @@ exports.update = async (req, res) => {
 };
 
 exports.listProducts = async (req, res) => {
-	let order = req.query.order ? req.query.order : 'asc';
+	let order = req.query.order ? req.query.order : 'desc';
 	let sortBy = req.query.sortBy ? req.query.sortBy : '_id';
 	let limit = req.query.limit ? parseInt(req.query.limit) : 6;
-
+	// console.log('asd');
 	await Product
 		.find({hide: false})
 		.select('-photo')
@@ -218,14 +218,12 @@ exports.listCategories = async(req, res) => {
 };
 
 exports.listBySearch = async(req, res) => {
-	let order = req.body.order ? req.body.order : 'desc';
+	let order = req.body.order ? req.body.order : 'asc';
 	let sortBy = req.body.sortBy ? req.body.sortBy : 'priceWithDiscount';
 	let limit = req.body.limit ? parseInt(req.body.limit) : 100;
 	let skip = parseInt(req.body.skip);
 	let category = req.body.categoryId;
 	let findArgs = {};
-	
-	// console.log(sortBy);
 	
 	for(let key in req.body.filters){
 		if(req.body.filters[key].length > 0){
@@ -273,7 +271,7 @@ exports.listBySearch = async(req, res) => {
 					error: 'Nisu nadjeni prozivodi'
 				});
 			}
-			// console.log(data);
+			console.log(order, data[0]);
 			res.json({
 				size: data.length,
 				data
