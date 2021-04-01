@@ -1,5 +1,6 @@
 const {Order, CartItem} = require('../models/Order');
 const User = require('../models/User');
+const Subscriber = require('../models/Subscriber');
 const { sendEmail } = require('../helpers/mailHelpers');
 const { errorHandler } = require('../helpers/dbErrorHandler');
 const { getInvoiceData } = require('../helpers/invoiceHelpers');
@@ -42,7 +43,17 @@ exports.create = async(req, res) => {
 
 	// 	}
 	// };
-	console.log(req.body.order);
+	if(order.emails == true){
+		const subscriber = await Subscriber.findOne({
+			email: order.email
+		});
+		if(subscriber === null){
+			const subscriberObject = await(new Subscriber({
+				email: order.email
+			}));
+			await subscriberObject.save();
+		}
+	}
 	const orderObject = await(new Order(req.body.order));
 	// console.log(orderObject);
 	await orderObject.save();
