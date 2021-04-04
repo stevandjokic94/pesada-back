@@ -2,6 +2,7 @@ const User = require('../models/User');
 const { sendEmail } = require('../helpers/mailHelpers');
 const crypto = require('crypto');
 const { v4: uuid } = require('uuid');
+const Subscriber = require('../models/Subscriber');
 
 exports.userById = async(req, res, next, id) => {
 	await User.findById(id).exec((err, user) => {
@@ -85,6 +86,17 @@ exports.editPassword = async(req, res) => {
 		   }
 		);
 		res.json({ success: 'asdasd' });
+	});
+};
+
+exports.getEmailList = async (req, res) => {
+	await Subscriber.find().exec((err, data) => {
+		if(err){
+			return res.status(400).json({
+				error: errorHandler(err)
+			});
+		}
+		res.json({ data });
 	});
 };
 

@@ -26,6 +26,11 @@ router.post('/user/forgot',
 router.post('/user/password', 
 	userController.editPassword
 );
+router.get('/user/:userId/emailList', 
+	authController.requireSignin, 
+	authController.isAdmin, 
+	userController.getEmailList
+);
 
 router.param('userId', userController.userById);
 
