@@ -5,13 +5,24 @@ const { errorHandler } = require('../helpers/dbErrorHandler');
 const { sendEmail } = require('../helpers/mailHelpers');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+const Subscriber = require('../models/Subscriber');
+
 
 exports.signup = async(req, res) => {
-	// console.log(req.body);
 	const user = await(new User(req.body));
-
+	
+	if(req.body.emails == true){
+		const subscriber = await Subscriber.findOne({
+			email: req.body.email
+		});
+		if(subscriber === null){
+			const subscriberObject = await(new Subscriber({
+				email: req.body.email
+			}));
+			await subscriberObject.save();
+		}
+	}
 	user.passwordToken = crypto.randomBytes(20).toString('hex');
-  // await user.save();
 
   const resetURL = `https://www.pesada.rs/account/confirm/${user.passwordToken}`;
  	sendEmail(user, 'Potvrda email adrese', `Molimo, kliknite na link kako biste verifikovali nalog: ${resetURL}`);
