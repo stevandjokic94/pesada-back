@@ -231,17 +231,17 @@ const getWeightPrice = (products) => {
   }
   let price = 0;
   if(weight <= 2 && products.length > 0)
-    price = 290;
-  if(weight > 2 && weight <= 5)
     price = 390;
+  if(weight > 2 && weight <= 5)
+    price = 490;
   if(weight > 5 && weight <= 10)
-    price = 590;
+    price = 690;
   if(weight > 10 && weight <= 20)
-    price = 790;
+    price = 890;
   if(weight > 20 && weight <= 50)
-    price = 1190;
-  if(weight > 50)
     price = 1490;
+  if(weight > 50)
+    price = 1990;
   return price;
 };
 
