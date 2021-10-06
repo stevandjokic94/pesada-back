@@ -69,7 +69,7 @@ exports.create = async(req, res) => {
 			
 			const products = req.body.order.products;
 			const price = products.reduce((acc, element) => {
-				return (acc + element.priceWithDiscount * element.count);
+				return (acc + parseInt(element.priceWithDiscount) * element.count);
 			}, 0);
 
 			let text = getEmailContent(order);
@@ -77,15 +77,13 @@ exports.create = async(req, res) => {
 
 			for(let i = 0; i < order.products.length; i++){
 				let product = order.products[i];
-				text += `\n\t${i+1}) \tNaziv proizvoda:    ${product.name}\n\t\t  Šifra proizvoda:      ${product.code}\n\t\t  Cena:                      ${formatPrice(product.priceWithDiscount)} din\n\t\t  Količina:                  ${product.count}\n\t\t  Iznos:                      ${formatPrice(product.priceWithDiscount * product.count)}din\n`;
+				text += `\n\t${i+1}) \tNaziv proizvoda:    ${product.name}\n\t\t  Šifra proizvoda:      ${product.code}\n\t\t  Cena:                      ${formatPrice(product.priceWithDiscount)} din\n\t\t  Količina:                  ${product.count}\n\t\t  Iznos:                      ${formatPrice(parseInt(product.priceWithDiscount) * product.count)}din\n`;
 			}
 			
 			let weightPrice = getWeightPrice(order.products);
 			text += `\nCena dostave: ${formatPrice(weightPrice)} din\n\nUKUPNO: ${formatPrice(price + weightPrice)} din\n\n`;
 			text += `U slučaju da nešto od proizvoda iz Vaše porudžbine trenutno nije dostupno, kontaktiraće Vas neko od naših operatera radi daljeg dogovora. Za sva dodatna pitanja možete nas kontaktirati putem email adrese: office@pesada.rs`;
-			console.log(text);
 			let admin = {'email': 'office@pesada.rs'};
-			console.log(admin);
 			if(user && order.signedIn){
 				//save to history
 				user.history.unshift(req.body.order.products);
