@@ -79,7 +79,7 @@ exports.create = async(req, res) => {
 				let product = order.products[i];
 				text += `\n\t${i+1}) \tNaziv proizvoda:    ${product.name}\n\t\t  Šifra proizvoda:      ${product.code}\n\t\t  Cena:                      ${formatPrice(product.priceWithDiscount)} din\n\t\t  Količina:                  ${product.count}\n\t\t  Iznos:                      ${formatPrice(parseInt(product.priceWithDiscount) * product.count)}din\n`;
 			}
-			
+
 			let weightPrice = getWeightPrice(order.products);
 			text += `\nCena dostave: ${formatPrice(weightPrice)} din\n\nUKUPNO: ${formatPrice(price + weightPrice)} din\n\n`;
 			text += `U slučaju da nešto od proizvoda iz Vaše porudžbine trenutno nije dostupno, kontaktiraće Vas neko od naših operatera radi daljeg dogovora. Za sva dodatna pitanja možete nas kontaktirati putem email adrese: office@pesada.rs`;
@@ -225,21 +225,25 @@ exports.contactUs = async(req, res) => {
 const getWeightPrice = (products) => {
   let weight = 0;
   for(let i = 0;i < products.length; i++){
-    weight += products[i].weight * products[i].count;
+  	if(!(products[i].shipping)){
+  	  weight += products[i].weight * products[i].count;
+  	}
   }
   let price = 0;
-  if(weight <= 2 && products.length > 0)
-    price = 390;
-  if(weight > 2 && weight <= 5)
-    price = 490;
-  if(weight > 5 && weight <= 10)
-    price = 690;
-  if(weight > 10 && weight <= 20)
-    price = 890;
-  if(weight > 20 && weight <= 50)
-    price = 1490;
-  if(weight > 50)
-    price = 1990;
+  if(weight !== 0){
+  	if(weight <= 2 && products.length > 0)
+    	price = 390;
+	  if(weight > 2 && weight <= 5)
+	    price = 490;
+	  if(weight > 5 && weight <= 10)
+	    price = 690;
+	  if(weight > 10 && weight <= 20)
+	    price = 890;
+	  if(weight > 20 && weight <= 50)
+	    price = 1490;
+	  if(weight > 50)
+	    price = 1990;
+  }
   return price;
 };
 
