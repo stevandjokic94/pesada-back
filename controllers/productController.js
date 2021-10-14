@@ -218,8 +218,8 @@ exports.listCategories = async(req, res) => {
 };
 
 exports.listBySearch = async(req, res) => {
-	let order = req.body.order ? req.body.order : 'asc';
-	let sortBy = req.body.sortBy ? req.body.sortBy : 'priceWithDiscount';
+	let order = req.body.order ? req.body.order : 'desc';
+	let sortBy = req.body.sortBy ? req.body.sortBy : 'name';
 	let limit = req.body.limit ? parseInt(req.body.limit) : 100;
 	let skip = parseInt(req.body.skip);
 	let category = req.body.categoryId;
