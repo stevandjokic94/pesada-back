@@ -463,7 +463,7 @@ exports.listDiscountProducts = async (req, res) => {
 		.select('-photo')
 		.select('-gallery')
 		.populate('subcategory')
-		.sort([[sortBy, order]])
+		// .sort([[sortBy, order]])
 		.limit(limit)
 		.exec((err, products) => {
 			if(err){
