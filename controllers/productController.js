@@ -469,7 +469,7 @@ exports.listDiscountProducts = async (req, res) => {
 			if(err){
 				console.log(err);
 				return res.status(400).json({
-					error: 'Proizvodi nisu pronadjeni'
+					error: `Proizvodi na popustu nisu pronadjeni, GREKA:${err}`
 				})
 			}
 			// console.log(products);
