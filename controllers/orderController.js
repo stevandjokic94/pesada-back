@@ -69,7 +69,7 @@ exports.create = async(req, res) => {
 			
 			const products = req.body.order.products;
 			const price = products.reduce((acc, element) => {
-				return (acc + parseInt(element.priceWithDiscount) * element.count);
+				return (acc + Math.round(element.priceWithDiscount) * element.count);
 			}, 0);
 
 			let text = getEmailContent(order);
@@ -77,7 +77,7 @@ exports.create = async(req, res) => {
 
 			for(let i = 0; i < order.products.length; i++){
 				let product = order.products[i];
-				text += `\n\t${i+1}) \tNaziv proizvoda:    ${product.name}\n\t\t  Šifra proizvoda:      ${product.code}\n\t\t  Cena:                      ${formatPrice(product.priceWithDiscount)} din\n\t\t  Količina:                  ${product.count}\n\t\t  Iznos:                      ${formatPrice(parseInt(product.priceWithDiscount) * product.count)}din\n`;
+				text += `\n\t${i+1}) \tNaziv proizvoda:    ${product.name}\n\t\t  Šifra proizvoda:      ${product.code}\n\t\t  Cena:                      ${formatPrice(product.priceWithDiscount)} din\n\t\t  Količina:                  ${product.count}\n\t\t  Iznos:                      ${formatPrice(Math.round(product.priceWithDiscount) * product.count)}din\n`;
 			}
 
 			let weightPrice = getWeightPrice(order.products);
