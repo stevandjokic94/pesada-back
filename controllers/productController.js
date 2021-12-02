@@ -456,7 +456,7 @@ exports.listSelectedProducts = async (req, res) => {
 exports.listDiscountProducts = async (req, res) => {
 	let order = req.query.order ? req.query.order : 'asc';
 	let sortBy = req.query.sortBy ? req.query.sortBy : '_id';
-	let limit = req.query.limit ? parseInt(req.query.limit) : 40;
+	let limit = req.query.limit ? parseInt(req.query.limit) : 150;
 
 	await Product
 		.find({hide: false, discount: { "$ne": 0 } })
@@ -472,7 +472,7 @@ exports.listDiscountProducts = async (req, res) => {
 					error: `Proizvodi na popustu nisu pronadjeni, GREKA:${err}`
 				})
 			}
-			// console.log(products);
+			// console.log(limit, products.length);
 			res.json(products);
 		});
 };
